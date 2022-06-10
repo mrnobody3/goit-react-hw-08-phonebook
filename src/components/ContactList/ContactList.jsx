@@ -1,19 +1,25 @@
 import PropTypes from 'prop-types';
 
-import s from './contactList.module.css';
+import { ListGroup, CloseButton } from 'react-bootstrap';
 
 const ContactList = ({ contacts, deleteContact }) => {
   const elements = contacts.map(({ name, number, id }) => (
-    <li key={id} className={s.item}>
-      <p className={s.info}>
+    <ListGroup.Item
+      as="li"
+      key={id}
+      className="d-flex justify-content-between align-items-start"
+    >
+      <p>
         {name}: {number}
       </p>
-      <button className={s.btn} type="button" onClick={() => deleteContact(id)}>
-        X
-      </button>
-    </li>
+      <CloseButton onClick={() => deleteContact(id)} />
+    </ListGroup.Item>
   ));
-  return <ul className={s.list}>{elements}</ul>;
+  return (
+    <ListGroup as="ol" numbered className="">
+      {elements}
+    </ListGroup>
+  );
 };
 
 export default ContactList;

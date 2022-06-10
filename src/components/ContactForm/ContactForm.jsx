@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 
-import s from './contactForm.module.css';
+import { Button, Form } from 'react-bootstrap';
 
 const ContactForm = ({ addContactBySubmit }) => {
   const [state, setState] = useState({
@@ -24,38 +24,35 @@ const ContactForm = ({ addContactBySubmit }) => {
   };
   const { name, number } = state;
   return (
-    <form className={s.form} onSubmit={handleSubmit}>
-      <label className={s.item} htmlFor="">
-        Name
-      </label>
-      <input
-        className={s.item}
-        type="text"
-        value={name}
-        name="name"
-        pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-        title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-        required
-        onChange={handleChange}
-      />
-
-      <label className={s.item} htmlFor="">
-        Number
-      </label>
-      <input
-        className={s.item}
-        type="tel"
-        value={number}
-        name="number"
-        pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-        title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-        required
-        onChange={handleChange}
-      />
-      <button className={`${s.item} ${s.btn}`} type="submit">
+    <Form onSubmit={handleSubmit}>
+      <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+        <Form.Label>Name</Form.Label>
+        <Form.Control
+          type="text"
+          value={name}
+          name="name"
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          required
+          onChange={handleChange}
+        />
+      </Form.Group>
+      <Form.Group className="mb-3" controlId="exampleForm.ControlInput2">
+        <Form.Label>Number</Form.Label>
+        <Form.Control
+          type="tel"
+          value={number}
+          name="number"
+          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+          required
+          onChange={handleChange}
+        />
+      </Form.Group>
+      <Button variant="primary" type="submit">
         Add contact
-      </button>
-    </form>
+      </Button>
+    </Form>
   );
 };
 

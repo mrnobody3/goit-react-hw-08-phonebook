@@ -1,76 +1,48 @@
-import { useState, useEffect, useCallback } from 'react';
+import { Navigate, Routes, Route } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { Spinner } from 'react-bootstrap';
 
-import { useSelector, shallowEqual, useDispatch } from 'react-redux';
+import NavbarMenu from './NavbarMenu';
+import { currentUser } from 'redux/auth/auth-operations';
+import PrivateRoute from 'shared/components/PrivateRoute';
+import PublicRoute from 'shared/components/PublicRoute';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-import {
-  getContacts,
-  getLoading,
-  getError,
-} from '../redux/contacts/contacts-selectors';
-
-import * as operations from 'redux/contacts/contacts-operations';
-
-import ContactForm from './ContactForm';
-import Filter from './Filter';
-import ContactList from './ContactList';
-
-import s from './app.module.css';
+const HomePage = lazy(() => import('../pages/HomePage'));
+const ContactsPage = lazy(() => import('../pages/ContactsPage'));
+const RegisterPage = lazy(() => import('../pages/RegisterPage'));
+const LoginPage = lazy(() => import('../pages/LoginPage'));
 
 const App = () => {
-  const contacts = useSelector(getContacts, shallowEqual);
-  const loading = useSelector(getLoading, shallowEqual);
-  const error = useSelector(getError, shallowEqual);
-  const [filter, setFilter] = useState('');
-
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(operations.fetchContacts());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleChange = useCallback(
-    e => {
-      setFilter(e.target.value);
-    },
-    [setFilter]
-  );
-
-  const deleteContact = id => {
-    dispatch(operations.deleteContact(id));
-  };
-
-  const getFilteredContacts = useCallback(() => {
-    if (!filter) {
-      return contacts;
-    }
-    const filterToLover = filter.toLowerCase();
-    const filteredContacts = contacts.filter(({ name }) => {
-      const result = name.toLowerCase().includes(filterToLover);
-      return result;
-    });
-    return filteredContacts;
-  }, [contacts, filter]);
-
-  const addContactBySubmit = props => {
-    dispatch(operations.addContact(props));
-  };
-
+    dispatch(currentUser());
+  }, [dispatch]);
   return (
-    <div className={s.container}>
-      <h1 className={s.title}>Phonebook</h1>
-      <ContactForm addContactBySubmit={addContactBySubmit} />
-      <h2 className={s.title}>Contacts</h2>
-      <Filter handleChange={handleChange} filter={filter} />
-      {error && <p>Whoops...Please try later</p>}
-      {loading && <p>Loading...</p>}
-      {Boolean(contacts.length) && (
-        <ContactList
-          contacts={getFilteredContacts()}
-          deleteContact={deleteContact}
-        />
-      )}
-    </div>
+    <>
+      <NavbarMenu />
+      <Suspense
+        fallback={
+          <Spinner animation="border" role="status" variant="primary">
+            <span className="visually-hidden">Loading...</span>
+          </Spinner>
+        }
+      >
+        <Routes>
+          <Route path="/" element={<HomePage />}></Route>
+          <Route element={<PrivateRoute />}>
+            <Route path="/contacts" element={<ContactsPage />}></Route>
+          </Route>
+          <Route element={<PublicRoute />}>
+            <Route path="/register" element={<RegisterPage />}></Route>
+            <Route path="/login" element={<LoginPage />}></Route>
+          </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
+    </>
   );
 };
 

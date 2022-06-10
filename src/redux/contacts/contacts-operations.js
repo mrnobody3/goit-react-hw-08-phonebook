@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-import * as API from 'services/contactsApi';
+import * as API from 'shared/services/contactsApi';
 
 export const fetchContacts = createAsyncThunk(
   'contact/fetch',
@@ -18,6 +18,7 @@ export const addContact = createAsyncThunk(
   async (data, { rejectWithValue }) => {
     try {
       const newContact = await API.addContact(data);
+
       return newContact;
     } catch (error) {
       return rejectWithValue(error);
@@ -25,7 +26,7 @@ export const addContact = createAsyncThunk(
   },
   {
     condition: (data, { getState }) => {
-      const contacts = getState();
+      const { contacts } = getState();
       const duplicate = contacts.items.find(item => item.name === data.name);
       if (duplicate) {
         alert(`${data.name} is already in phonebook`);
@@ -39,8 +40,9 @@ export const deleteContact = createAsyncThunk(
   'contact/delete',
   async (id, { rejectWithValue }) => {
     try {
-      const { id: deleteId } = await API.removeContact(id);
-      return deleteId;
+      const contactId = await API.removeContact(id);
+
+      return contactId;
     } catch (error) {
       return rejectWithValue(error);
     }

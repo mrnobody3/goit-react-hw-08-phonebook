@@ -1,15 +1,17 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
-
-import s from './filter.module.css';
+import { InputGroup, FormControl } from 'react-bootstrap';
 
 const Filter = ({ handleChange, filter }) => {
   return (
-    <div>
-      <label className={s.name} htmlFor="">
-        Find contacts by name:{' '}
-      </label>
-      <input
+    <InputGroup className="mb-3">
+      <InputGroup.Text id="basic-addon1">
+        Find contacts by name:
+      </InputGroup.Text>
+      <FormControl
+        placeholder="Enter the name..."
+        aria-label="Name"
+        aria-describedby="basic-addon1"
         type="text"
         value={filter}
         name="filter"
@@ -18,7 +20,7 @@ const Filter = ({ handleChange, filter }) => {
         required
         onChange={handleChange}
       />
-    </div>
+    </InputGroup>
   );
 };
 

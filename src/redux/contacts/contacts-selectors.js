@@ -1,3 +1,3 @@
-export const getContacts = store => store.items;
-export const getLoading = store => store.loading;
-export const getError = store => store.error;
+export const getContacts = ({ contacts }) => contacts.items;
+export const getLoading = ({ contacts }) => contacts.loading;
+export const getError = ({ contacts }) => contacts.error;
